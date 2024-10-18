@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import argparse
 import sys
 import subprocess
@@ -68,12 +69,13 @@ def label_patches(args):
 
                 # 如果提供了消息，则将其添加到命令中
                 if args.message:
-                    review_command.append(f'--message={args.message}')
+                    # 使用 -m '"message内容"' 格式
+                    review_command.append(f'-m \'"{args.message}"\'')
 
                 print(f"Preparing to label patch '{full_patch_id}' in project '{project}' with command: {' '.join(review_command)}")
 
                 try:
-                    subprocess.check_call(review_command)
+                    subprocess.run(' '.join(review_command), shell=True, check=True)
                     print(f"Successfully labeled patch '{full_patch_id}'")
                 except subprocess.CalledProcessError as e:
                     print(f"Failed to label patch '{full_patch_id}'. Error: {e}")
@@ -105,3 +107,4 @@ if __name__ == '__main__':
         print("Error: '--score' is required when '--label' is provided.")
         sys.exit(1)
     label_patches(args)
+
